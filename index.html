@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="OtlumGram — социальная платформа с каналами, чатами и подарками">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>OtlumGram v2.0</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OtlumGram v2.0">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="logo">OtlumGram</div>
+    <div class="burger" id="burger">☰</div>
+</div>
+
+<div class="burger-menu" id="burgerMenu">
+    <button class="burger-item" data-page="settings">⚙️ Настройки</button>
+    <button class="burger-item" data-page="channels">📋 Все каналы</button>
+    <button class="burger-item" data-page="groups">👥 Группы</button>
+    <button class="burger-item" data-page="chats">💬 Чаты</button>
+    <button class="burger-item" data-page="leaderboard">🏆 Рейтинг</button>
+    <button class="burger-item" data-page="shop">🛒 Магазин</button>
+    <button class="burger-item" data-page="dashboard">📊 Дашборд</button>
+    <button class="burger-item" data-page="searchProfiles">🔍 Поиск профилей</button>
+    <button class="burger-item" data-page="official">📢 OtlumGram Official</button>
+    <button class="burger-item admin-only" id="adminBurgerBtn" data-page="admin" style="display:none;">⚙️ Админ</button>
+</div>
+
+<div class="bottom-nav">
+    <button class="nav-btn active" data-page="news">📰 Новости</button>
+    <button class="nav-btn" data-page="search">🔍 Поиск</button>
+    <button class="nav-btn" data-page="favorites">⭐️ Избранное</button>
+    <button class="nav-btn" data-page="pm">💬 ЛС</button>
+</div>
+
+<div class="content">
+    
+    <div id="newsPage" class="page active">
+        <div id="newsList"></div>
+    </div>
+
+    <div id="searchPage" class="page">
+        <input type="text" id="searchInput" placeholder="Поиск каналов и чатов...">
+        <div id="searchResults"></div>
+    </div>
+
+    <div id="searchProfilesPage" class="page">
+        <h3>🔍 Поиск пользователей</h3>
+        <input type="text" id="profileSearchInput" placeholder="Введите юзернейм...">
+        <div id="profileSearchResults"></div>
+    </div>
+
+    <div id="favoritesPage" class="page">
+        <h3>⭐️ Избранное</h3>
+        <div id="favoritesList"></div>
+        <div class="notes-section">
+            <h4>📝 Мои заметки</h4>
+            <textarea id="userNotes" placeholder="Напишите свои заметки..." rows="4"></textarea>
+            <button id="saveNotesBtn">💾 Сохранить заметки</button>
+        </div>
+        <div class="blacklist-section">
+            <h4>🚫 Чёрный список</h4>
+            <div id="blacklistList"></div>
+        </div>
+    </div>
+
+    <div id="pmPage" class="page">
+        <h3>💬 Личные сообщения</h3>
+        <div id="chatsList"></div>
+        <div id="activeChat" style="display:none;">
+            <div id="chatHeader"></div>
+            <div id="chatMessages" class="messages-area"></div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="chatMessageInput" placeholder="Написать сообщение...">
+                <button id="sendChatMessage">📨 Отправить</button>
+            </div>
+            <button id="closeChat">✖️ Закрыть чат</button>
+        </div>
+    </div>
+
+    <div id="channelsPage" class="page">
+        <h3>Все каналы</h3>
+        <div id="allChannelsList" class="channels-list"></div>
+        <button id="createChannelBtn" class="btn-primary">📢 Создать канал</button>
+    </div>
+
+    <div id="groupsPage" class="page">
+        <h3>Группы</h3>
+        <div id="groupsList" class="channels-list"></div>
+        <button id="createGroupBtn" class="btn-primary">👥 Создать группу</button>
+    </div>
+
+    <div id="chatsPage" class="page">
+        <h3>Чаты</h3>
+        <div id="allChatsList" class="channels-list"></div>
+        <button id="createChatBtn" class="btn-primary">💬 Создать чат</button>
+    </div>
+
+    <div id="leaderboardPage" class="page">
+        <h3>🏆 Рейтинг по монетам</h3>
+        <div id="leaderboardList"></div>
+    </div>
+
+    <div id="shopPage" class="page">
+        <h3>🛒 Магазин подарков</h3>
+        <div id="userCoinsDisplay"></div>
+        <div class="exchange-info">
+            🪙 Пополнение: <a href="https://t.me/otlumdev" target="_blank">@otlumdev</a><br>
+            1$ = 100 🪙 | 1 Star = 10 🪙
+        </div>
+        <div id="giftsShop" class="gifts-grid"></div>
+        <div class="my-gifts-section">
+            <h4>🎁 Мои подарки</h4>
+            <div id="myGiftsList" class="my-gifts-grid"></div>
+        </div>
+    </div>
+
+    <div id="dashboardPage" class="page">
+        <h3>📊 Дашборд</h3>
+        <div id="dashboardStats"></div>
+        <div id="dashboardChannels"></div>
+    </div>
+
+    <div id="officialPage" class="page">
+        <div class="official-header">
+            <div class="official-avatar">👑</div>
+            <div class="official-info">
+                <h2>OtlumGram Official</h2>
+                <div class="official-badge">
+                    <div class="premium-verified">✔️</div>
+                    <span>Официальный канал</span>
+                </div>
+            </div>
+        </div>
+        <div id="officialMessages" class="messages-area"></div>
+        <div id="officialInputArea" style="display:none;">
+            <input type="text" id="officialMessageInput" placeholder="Написать сообщение...">
+            <button id="sendOfficialMessage">📨 Отправить</button>
+        </div>
+    </div>
+
+    <div id="settingsPage" class="page">
+        <div id="profileInfo"></div>
+        <div class="settings-section">
+            <h3>🖼️ Аватар профиля</h3>
+            <div class="avatar-section">
+                <div class="avatar-preview" id="avatarPreview">
+                    <span id="avatarEmoji">👤</span>
+                </div>
+                <div class="avatar-buttons">
+                    <button class="avatar-btn" data-avatar="👤">👤</button>
+                    <button class="avatar-btn" data-avatar="😎">😎</button>
+                    <button class="avatar-btn" data-avatar="👨‍💻">👨‍💻</button>
+                    <button class="avatar-btn" data-avatar="🎮">🎮</button>
+                    <button class="avatar-btn" data-avatar="📚">📚</button>
+                    <button class="avatar-btn" data-avatar="⚡">⚡</button>
+                    <button class="avatar-btn" data-avatar="🎨">🎨</button>
+                    <button class="avatar-btn" data-avatar="🏆">🏆</button>
+                </div>
+                <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
+                <button id="uploadAvatarBtn" class="upload-avatar-btn">📷 Загрузить своё фото</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3>✨ Премиум настройки</h3>
+            <div id="premiumStatus"></div>
+            <input type="text" id="premiumNickname" placeholder="Никнейм с эмодзи (только для премиум)" maxlength="30">
+            <button id="applyPremiumNick">Применить никнейм</button>
+            <div id="premiumShop"></div>
+        </div>
+        <div class="settings-section">
+            <h3>📝 Редактировать профиль</h3>
+            <input type="text" id="editFullname" placeholder="Имя и фамилия">
+            <input type="text" id="editUsername" placeholder="Юзернейм">
+            <button id="saveProfileBtn">Сохранить</button>
+        </div>
+        <div class="settings-section">
+            <h3>🎨 Тема</h3>
+            <div class="theme-selector">
+                <button class="theme-btn" data-theme="dark">🌙 Тёмная</button>
+                <button class="theme-btn" data-theme="light">☀️ Светлая</button>
+                <button class="theme-btn" data-theme="neon">🌈 Неоновая</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3>📱 Поделиться профилем</h3>
+            <button id="shareProfileBtn" class="share-btn">🔗 Скопировать ссылку</button>
+            <button id="shareQrBtn" class="share-btn">📱 Показать QR-код</button>
+        </div>
+        <div class="settings-section">
+            <h3>❓ Помощь</h3>
+            <button id="openHelpModal" class="help-btn">📩 Задать вопрос</button>
+            <button id="openFeaturesBtn" class="help-btn">✨ Возможности OtlumGram</button>
+        </div>
+        <div class="settings-section">
+            <h3>📊 Лимит аккаунтов</h3>
+            <div id="accountLimitInfo"></div>
+        </div>
+        <button id="logoutBtn" class="logout-btn">🚪 Выйти из аккаунта</button>
+        <button id="createNewAccountBtn" class="create-account-btn">➕ Создать новый аккаунт</button>
+    </div>
+
+    <div id="adminPage" class="page">
+        <h3>⚙️ Админ-панель</h3>
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="users">👥 Пользователи</button>
+            <button class="admin-tab" data-tab="devices">📱 Данные устройств</button>
+            <button class="admin-tab" data-tab="banlogs">📋 Логи банов</button>
+            <button class="admin-tab" data-tab="logs">📋 Общие логи</button>
+            <button class="admin-tab" data-tab="channels">📢 Каналы</button>
+            <button class="admin-tab" data-tab="groups">👥 Группы</button>
+            <button class="admin-tab" data-tab="chatsAdmin">💬 Чаты</button>
+            <button class="admin-tab" data-tab="news">📰 Новости</button>
+            <button class="admin-tab" data-tab="complaints">⚠️ Жалобы</button>
+        </div>
+        
+        <div id="adminUsersTab" class="admin-tab-content active">
+            <input type="text" id="adminSearch" placeholder="Поиск по нику..." style="margin-bottom:12px;">
+            <div id="adminUsersList"></div>
+        </div>
+        
+        <div id="adminDevicesTab" class="admin-tab-content">
+            <div id="devicesDataList"></div>
+            <button id="exportDevicesData" style="margin-top:12px;">📥 Экспорт данных</button>
+        </div>
+        
+        <div id="adminBanlogsTab" class="admin-tab-content">
+            <div id="banLogsList" class="logs-area"></div>
+            <button id="clearBanLogs" style="margin-top:12px;">🗑️ Очистить логи банов</button>
+        </div>
+        
+        <div id="adminLogsTab" class="admin-tab-content">
+            <div id="generalLogsList" class="logs-area"></div>
+            <button id="clearGeneralLogs" style="margin-top:12px;">🗑️ Очистить общие логи</button>
+        </div>
+        
+        <div id="adminChannelsTab" class="admin-tab-content">
+            <div id="adminChannelsList"></div>
+        </div>
+        
+        <div id="adminGroupsTab" class="admin-tab-content">
+            <div id="adminGroupsList"></div>
+        </div>
+        
+        <div id="adminChatsAdminTab" class="admin-tab-content">
+            <div id="adminChatsList"></div>
+        </div>
+        
+        <div id="adminNewsTab" class="admin-tab-content">
+            <input type="text" id="newsTitle" placeholder="Заголовок">
+            <textarea id="newsText" placeholder="Текст новости"></textarea>
+            <button id="addNewsBtn">➕ Добавить новость</button>
+            <div id="adminNewsList"></div>
+        </div>
+        
+        <div id="adminComplaintsTab" class="admin-tab-content">
+            <div id="complaintsList"></div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНЫЕ ОКНА -->
+
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <h2>OtlumGram</h2>
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-auth="login">Вход</button>
+            <button class="auth-tab" data-auth="register">Регистрация</button>
+        </div>
+        <div id="loginForm" class="auth-form active">
+            <input type="text" id="loginUsername" placeholder="Юзернейм">
+            <input type="password" id="loginPassword" placeholder="Пароль">
+            <button id="doLoginBtn">Войти</button>
+        </div>
+        <div id="registerForm" class="auth-form">
+            <input type="text" id="regFullname" placeholder="Имя и фамилия">
+            <input type="text" id="regUsername" placeholder="Юзернейм">
+            <input type="password" id="regPassword" placeholder="Пароль">
+            <input type="email" id="regEmail" placeholder="Gmail">
+            <input type="tel" id="regPhone" placeholder="Номер телефона" required>
+            <button id="doRegisterBtn">Зарегистрироваться</button>
+        </div>
+        <div class="auth-footer">
+            <a href="https://t.me/otlumdev" target="_blank">📱 Поддержка: @otlumdev</a>
+        </div>
+    </div>
+</div>
+
+<div id="helpModal" class="modal">
+    <div class="modal-content">
+        <h3>📩 Задать вопрос</h3>
+        <textarea id="helpQuestion" placeholder="Напишите ваш вопрос..." rows="5"></textarea>
+        <div class="modal-buttons">
+            <button id="submitHelpQuestion">📨 Отправить</button>
+            <button id="closeHelpModal">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="createChannelModal" class="modal">
+    <div class="modal-content">
+        <h3>✨ Создать канал</h3>
+        <input type="text" id="channelName" placeholder="Название">
+        <input type="text" id="channelAvatar" placeholder="Эмодзи (например: 📢)" maxlength="2">
+        <input type="text" id="channelLink" placeholder="Кастомная ссылка (только латиница)">
+        <div class="modal-buttons">
+            <button id="confirmCreateChannel">Создать</button>
+            <button id="cancelCreateModal">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="createChatModal" class="modal">
+    <div class="modal-content">
+        <h3>💬 Создать чат</h3>
+        <input type="text" id="chatName" placeholder="Название чата">
+        <input type="text" id="chatAvatar" placeholder="Эмодзи (например: 💬)" maxlength="2">
+        <div class="modal-buttons">
+            <button id="confirmCreateChat">Создать</button>
+            <button id="cancelCreateChatModal">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="createGroupModal" class="modal">
+    <div class="modal-content">
+        <h3>👥 Создать группу</h3>
+        <input type="text" id="groupName" placeholder="Название группы">
+        <input type="text" id="groupAvatar" placeholder="Эмодзи (например: 👥)" maxlength="2">
+        <div class="modal-buttons">
+            <button id="confirmCreateGroup">Создать</button>
+            <button id="cancelCreateGroupModal">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="channelModal" class="modal">
+    <div class="modal-content">
+        <div id="channelModalHeader"></div>
+        <div class="channel-actions" id="channelActions"></div>
+        <div id="channelMessages" class="messages-area"></div>
+        <div id="reactionPicker" style="display:none;" class="reaction-picker">
+            <button class="reaction-opt" data-reaction="👍">👍</button>
+            <button class="reaction-opt" data-reaction="❤️">❤️</button>
+            <button class="reaction-opt" data-reaction="😂">😂</button>
+            <button class="reaction-opt" data-reaction="😮">😮</button>
+            <button class="reaction-opt" data-reaction="🔥">🔥</button>
+            <button class="reaction-opt" data-reaction="🎉">🎉</button>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="channelMessageInput" placeholder="Написать сообщение...">
+            <button id="sendChannelMessage">Отправить</button>
+            <button id="showReactionBtn" class="reaction-btn">😊</button>
+        </div>
+        <button id="closeChannelModal">Закрыть</button>
+    </div>
+</div>
+
+<div id="sendGiftModal" class="modal">
+    <div class="modal-content">
+        <h3>🎁 Отправить подарок</h3>
+        <div id="giftInfo"></div>
+        <select id="giftUserSelect"></select>
+        <div class="modal-buttons">
+            <button id="confirmSendGift">Отправить</button>
+            <button id="cancelSendGift">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="complaintModal" class="modal">
+    <div class="modal-content">
+        <h3>⚠️ Подать жалобу</h3>
+        <select id="complaintUserSelect"></select>
+        <textarea id="complaintReason" placeholder="Причина жалобы..." rows="3"></textarea>
+        <div class="modal-buttons">
+            <button id="submitComplaint">Отправить</button>
+            <button id="cancelComplaint">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="qrModal" class="modal">
+    <div class="modal-content" style="text-align:center;">
+        <h3>QR-код профиля</h3>
+        <div id="qrcode"></div>
+        <button id="closeQrModal">Закрыть</button>
+    </div>
+</div>
+
+<div id="banModal" class="modal">
+    <div class="modal-content ban-modal">
+        <div class="ban-icon">🚫</div>
+        <div class="ban-title">БАН</div>
+        <div class="ban-user-info">
+            <div class="ban-avatar">👤</div>
+            <div class="ban-user-details">
+                <div class="ban-user-name" id="banUserName"></div>
+                <div class="ban-user-badge">Заблокированный Аккаунт</div>
+            </div>
+        </div>
+        <div class="ban-reason-title">🚫 Причина Блокировки</div>
+        <div class="ban-reason-text" id="banReasonText"></div>
+        <div class="ban-table">
+            <div class="ban-row"><div class="ban-label">КТО ЗАБЛОКИРОВАЛ</div><div class="ban-value" id="banBy"></div></div>
+            <div class="ban-row"><div class="ban-label">ДОЛЖНОСТЬ</div><div class="ban-value" id="banRole"></div></div>
+            <div class="ban-row"><div class="ban-label">ДАТА БАНА</div><div class="ban-value" id="banDate"></div></div>
+            <div class="ban-row"><div class="ban-label">СНЯТИЕ</div><div class="ban-value" id="banExpiry"></div></div>
+        </div>
+        <div class="ban-appeal">Считаете блокировка по ошибке?<br>📱 <a href="https://t.me/otlumdev" target="_blank">@otlumdev</a></div>
+        <button id="closeBanModal">Выйти</button>
+    </div>
+</div>
+
+<div id="messageModal" class="modal">
+    <div class="modal-content">
+        <h3 id="messageModalTitle"></h3>
+        <p id="messageModalText"></p>
+        <button id="closeMessageModal">Закрыть</button>
+    </div>
+</div>
+
+<script src="/script.js"></script>
+</body>
+</html>
